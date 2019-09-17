@@ -1,0 +1,79 @@
+clc; clear; tic;
+
+%% INITIALIZATION
+
+gen = 70; pop = 100;
+
+x1 = generateEggHolderX(pop,gen);
+x2 = generateEggHolderX(pop,gen);
+
+x1val = bin2num(x1);
+x2val = bin2num(x2);
+
+fitness = fitProb29twoVar(bin2num(x1),bin2num(x2));
+
+setHasilGAx1 = int16([]);
+setHasilGAx2 = int16([]);
+kumpulanNilaiFitness = [];
+nilaiMax = [];
+
+pcross = 0.3;
+pmut = 0.3;
+
+%% GENETIC ALGORITHM
+
+for iterasi = 1:1000
+    %% SELECTION %%
+    x1new = selection_EggHolder(x1,fitness);
+    x2new = selection_EggHolder(x2,fitness);
+
+    %% CROSS OVER %%
+    x1new = crossover_EggHolder(x1new, pcross);
+    x2new = crossover_EggHolder(x2new, pcross);
+
+    %% MUTATION %%
+    x1new = mutation_EggHolder(x1new, pmut);
+    x2new = mutation_EggHolder(x2new, pmut);
+
+    %% NEW GENERATION %%
+%     kumpulanNilaiFitness(:,iterasi) = fitProb29twoVar(bin2num(x1new),bin2num(x2new));
+%     nilaiMax(iterasi) = max(kumpulanNilaiFitness(:,iterasi));
+%     setHasilGAx1{iterasi} = x1new;
+%     setHasilGAx2{iterasi} = x2new;
+%     x1 = x1new;
+%     x2 = x2new;
+    
+    fitnessbaru = fitProb29twoVar(bin2num(x1new),bin2num(x2new));
+    for i = 1:pop
+        if fitnessbaru(i)>fitness(i)
+            x1(i,:) = x1new(i,:)
+            x2(i,:) = x2new(i,:)
+        end
+    end
+    
+    fitness = fitProb29twoVar(bin2num(x1),bin2num(x2));
+end
+
+%% EVALUASI POPULASI
+
+bin2num(x1);
+bin2num(x2);
+-fitness
+toc
+
+% outputf = max(nilaiMax);
+% arrIndexCol = find(nilaiMax==outputf);
+% indexCol = arrIndexCol(1);
+% arrIndexRow = find(kumpulanNilaiFitness(:,indexCol)==outputf);
+% indexRow = arrIndexRow(1);
+% 
+% setx1 = setHasilGAx1{indexCol};
+% setx2 = setHasilGAx2{indexCol};
+% 
+% x1 = setx1(indexRow,:);
+% x2 = setx2(indexRow,:);
+% 
+% bin2num(x1)
+% bin2num(x2)
+% fitProb29twoVar(bin2num(x1),bin2num(x2))
+% toc
